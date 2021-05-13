@@ -12,26 +12,9 @@ import java.util.*;
  *
  * @author evan
  */
-public class Main_Class {
-//    public static void main(String[]args)throws Exception{
-//        data.intMahasiswa();
-//        data.intDosen();
-//        data.addMahasiswa("AKU","123123","TIF","FILKOM");
-//        data.addMahasiswa("DIA","123456","TIF","FILKOM");
-//        data.addDosen("ANDA","0987654","TIF","FILKOM");
-//        data.addDosen("KAMU","5632724","TIF","FILKOM");
-//        data.addDosen("MEREKA", "694200","TIF","FILKOM");
-//        data.printMahasiswa();
-//        data.printDosen();
-//        data.hapusMahasiswa("Aku", "123123","TIF","FILKOM");
-//        data.hapusDosen("MerEkA", "694200","TIF","FILKOM");
-//        data.printMahasiswa();
-//        data.printDosen();
-//    }
-}
+public class Main_Class {}
 
 class data {
-    static ArrayList<String> civ=new ArrayList<>();
     static void intMahasiswa() throws Exception {
         init("mahasiswa.txt");
     }
@@ -44,6 +27,10 @@ class data {
     static void hapusMahasiswa(String nama, String nim, String prodi, String fakultas) throws Exception{
         delete("mahasiswa.txt",nama,nim,prodi,fakultas);
     }
+    static void updateMahasiswa(String nama,String nim,String prodi,String fakultas,
+    String namaBaru,String nimBaru,String prodiBaru,String fakultasBaru)throws Exception{
+        update("mahasiswa.txt",nama,nim,prodi,fakultas,namaBaru,nimBaru,prodiBaru,fakultasBaru);
+    }
     static void intDosen() throws Exception {
         init("dosen.txt");
     }
@@ -55,6 +42,10 @@ class data {
     }
     static void hapusDosen(String nama,String nip, String prodi, String fakultas)throws Exception{
         delete("dosen.txt",nama,nip,prodi,fakultas);
+    }
+    static void updateDosen(String nama,String nip,String prodi,String fakultas,
+            String namaBaru,String nipBaru,String prodiBaru,String fakultasBaru)throws Exception{
+        update("dosen.txt",nama,nip,prodi,fakultas,namaBaru,nipBaru,prodiBaru,fakultasBaru);
     }
     private static void init(String fileString) throws Exception {
         FileReader read;
@@ -104,6 +95,50 @@ class data {
             
         }
     }
+    private static void update(String namaFile,String nama,String nomor,String prodi,
+    String fakultas,String namaBaru,String nomorBaru,String prodiBaru,String fakultasBaru)throws Exception{
+        init("tmp"+namaFile);
+        FileReader read;
+        ArrayList<String> readingLines=new ArrayList<>();
+        String line;
+
+        read=new FileReader(namaFile);
+        BufferedReader bufferedReader = new BufferedReader(read);
+        while ((line = bufferedReader.readLine()) != null) {
+            readingLines.add(line);
+        }
+        bufferedReader.close();
+        for (int i = 0; i < readingLines.size(); i++) {
+            String []tmp=readingLines.get(i).trim().split("-");
+            if(tmp[0].equalsIgnoreCase(nama) && tmp[1].equalsIgnoreCase(nomor) && tmp[2].equalsIgnoreCase(prodi) && tmp[3].equalsIgnoreCase(fakultas))
+                adder("tmp"+namaFile,namaBaru,nomorBaru,prodiBaru,fakultasBaru);
+            else adder("tmp"+namaFile,tmp[0],tmp[1],tmp[2],tmp[3]);
+        }
+
+        BufferedWriter out = new BufferedWriter (new FileWriter(namaFile));
+        out.write("aString1\n");out.close();
+        boolean success = (new File(namaFile)).delete();
+        
+        init(namaFile);
+        FileReader read2;
+        ArrayList<String> readingLines2=new ArrayList<>();
+        String line2;
+
+        read2=new FileReader("tmp"+namaFile);
+        BufferedReader bufferedReader2 = new BufferedReader(read2);
+        while ((line = bufferedReader2.readLine()) != null) {
+            readingLines2.add(line);
+        }
+        bufferedReader2.close();
+        for (int i = 0; i < readingLines2.size(); i++) {
+            String []tmp=readingLines2.get(i).trim().split("-");
+            adder(namaFile,tmp[0],tmp[1],tmp[2],tmp[3]);
+        }
+        
+        BufferedWriter out2 = new BufferedWriter (new FileWriter("tmp"+namaFile));
+        out2.write("aString1\n");out2.close();
+        boolean success2 = (new File("tmp"+namaFile)).delete();
+    }
     private static void delete(String namaFile,String nama, String nomor, String prodi, String fakultas)throws Exception{
         init("tmp"+namaFile);
         FileReader read;
@@ -146,11 +181,4 @@ class data {
         out2.write("aString1\n");out2.close();
         boolean success2 = (new File("tmp"+namaFile)).delete();
     }
-    static void addCiv(String nama, String prodi, String fakultas){
-        civ.add(nama+"-"+prodi+"-"+fakultas);
-    }
 }
-
-
-
-
